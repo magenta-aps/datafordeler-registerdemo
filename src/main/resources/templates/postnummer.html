@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Register Demo - Create item</title>
+    <link href="http://cdn.jsdelivr.net/webjars/bootstrap/3.2.0/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/3.2.0/css/bootstrap.min.css}" rel="stylesheet" media="screen" />
+    <script src="http://cdn.jsdelivr.net/webjars/jquery/2.1.1/jquery.min.js" th:src="@{/webjars/jquery/2.1.1/jquery.min.js}"></script>
+</head>
+<body>
+    <h1 th:text="${postnummer.id}"></h1>
+    <table style="border:1px solid">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Postnummer</th>
+            <th>Bynavn</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="registration : ${allRegistrations}">
+            <td th:text="${registration.id}">1</td>
+            <td th:text="${registration.nummer}"></td>
+            <td th:text="${registration.bynavn}"></td>
+        </tr>
+        </tbody>
+    </table>
+<a th:href="|/postnummer/${postnummer.id}/update|">Add registration</a>
+</body>
+</html>
