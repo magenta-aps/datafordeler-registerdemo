@@ -7,23 +7,28 @@
     <script src="http://cdn.jsdelivr.net/webjars/jquery/2.1.1/jquery.min.js" th:src="@{/webjars/jquery/2.1.1/jquery.min.js}"></script>
 </head>
 <body>
-    <h1 th:text="${postnummer.id}"></h1>
-    <table style="border:1px solid">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Postnummer</th>
-            <th>Bynavn</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="registration : ${allRegistrations}">
-            <td th:text="${registration.id}">1</td>
-            <td th:text="${registration.nummer}"></td>
-            <td th:text="${registration.bynavn}"></td>
-        </tr>
-        </tbody>
-    </table>
-<a th:href="|/postnummer/${postnummer.id}/update|">Add registration</a>
+    <div class="container">
+        <h2>Datafordeler - Registerdemo</h2>
+        <h3 th:text="|Postnr id #${postnummer.id}|"></h3>
+        <table class="table table-bordered">
+            <caption>Registreringer på postnummeret</caption>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Postnummer</th>
+                    <th>Bynavn</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="registration : ${allRegistrations}">
+                    <td th:text="${registration.id}">1</td>
+                    <td th:text="${registration.nummer}"></td>
+                    <td th:text="${registration.bynavn}"></td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="/postnummmer" class="btn btn-default">Tilbage til liste</a>
+        <a th:href="|/postnummer/${postnummer.id}/update|" class="btn btn-default">Tilføj registrering</a>
+    </div>
 </body>
 </html>

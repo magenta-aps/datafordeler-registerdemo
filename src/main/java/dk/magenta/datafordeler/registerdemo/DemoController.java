@@ -55,6 +55,7 @@ public class DemoController {
         PostnummerRegistrering registrering = new PostnummerRegistrering();
         model.addAttribute("postnummer", postnummer);
         model.addAttribute("postnummerregistrering", registrering);
+        model.addAttribute("cancel", "/postnummer");
         return "postnummerregistrering";
     }
 
@@ -94,6 +95,7 @@ public class DemoController {
         }
         model.addAttribute("postnummer", postnummer);
         model.addAttribute("postnummerregistrering", registrering);
+        model.addAttribute("cancel", "/postnummer/" + id);
         return "postnummerregistrering";
     }
 

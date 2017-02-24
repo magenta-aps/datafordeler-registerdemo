@@ -7,17 +7,29 @@
     <script src="http://cdn.jsdelivr.net/webjars/jquery/2.1.1/jquery.min.js" th:src="@{/webjars/jquery/2.1.1/jquery.min.js}"></script>
 </head>
 <body>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="item : ${allPostnummerItems}">
-                <td th:text="${item.id}">1</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="container">
+        <h2>Datafordeler - Registerdemo</h2>
+        <table class="table table-bordered">
+            <caption>
+                Liste af postnumre
+            </caption>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Handlinger</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${allPostnummerItems}">
+                    <td th:text="${item.id}">1</td>
+                    <td><a th:href="|/postnummer/${item.id}|" class="btn btn-default btn-sm">Vis</a></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(allPostnummerItems)}">
+                    <td>(ingen postnumre oprettet)</td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="/postnummer/create" class="btn btn-default">Opret nyt postnummer</a>
+    </div>
 </body>
 </html>
