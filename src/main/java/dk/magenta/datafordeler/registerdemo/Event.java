@@ -96,7 +96,7 @@ public class Event {
 
     public class ObjectReference {
 
-        @JsonProperty
+        @JsonProperty("objektreference")
         private String objektReference;
 
         public String getObjektReference() {

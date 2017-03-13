@@ -23,18 +23,4 @@ public class Postnummer {
     public void setId(Long id) {
         this.id = id;
     }
-
-    /*public Iterable<PostnummerRegistrering> getRegistreringer() {
-        System.out.println("postnummerRegistreringRepository: "+postnummerRegistreringRepository);
-        return postnummerRegistreringRepository.findByEntityOrderByRegisterFrom(this);
-    }
-
-    @JsonIgnore
-    public PostnummerRegistrering getLatest() {
-        Iterator<PostnummerRegistrering> iterator = this.getRegistreringer().iterator();
-        if (iterator.hasNext()) {
-            return iterator.next();
-        }
-        return null;
-    }*/
 }

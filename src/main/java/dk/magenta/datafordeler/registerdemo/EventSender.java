@@ -27,23 +27,30 @@ public class EventSender {
         this.objectMapper = new ObjectMapper();
     }
 
-    public void sendPostnummerAddEvent(Postnummer postnummer) {
-        this.sendEvent("skema", postnummer);
-    }
-
 
     public void sendPostnummerRegistreringAddEvent(PostnummerRegistrering registrering) {
-        this.sendEvent("skema", registrering);
+        this.sendPostnummerRegistreringAddEvent(registrering, false);
+    }
+    public void sendPostnummerRegistreringAddEvent(PostnummerRegistrering registrering, boolean referenceOnly) {
+        if (referenceOnly) {
+            this.sendEvent("Postnummer", null, registrering.getReference());
+        } else {
+            this.sendEvent("Postnummer", registrering, null);
+        }
     }
 
-
-    private void sendEvent(String skema, Object data) {
+    private void sendEvent(String skema, Object data, Object reference) {
         try {
             Event event = new Event();
             event.setBeskedVersion(messageVersion);
             event.setDataskema(skema);
-            event.setObjektData(objectMapper.writeValueAsString(data));
-            sendEvent(event);
+            if (data != null) {
+                event.setObjektData(objectMapper.writeValueAsString(data));
+            }
+            if (reference != null) {
+                event.setObjektReference(objectMapper.writeValueAsString(reference));
+            }
+            this.sendEvent(event);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

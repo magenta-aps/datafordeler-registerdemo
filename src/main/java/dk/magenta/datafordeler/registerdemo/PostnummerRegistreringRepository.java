@@ -9,4 +9,5 @@ import org.springframework.data.repository.query.Param;
  */
 public interface PostnummerRegistreringRepository extends CrudRepository<PostnummerRegistrering, Long> {
     Iterable<PostnummerRegistrering> findByEntityOrderByRegisterFrom(Postnummer entity);
+    PostnummerRegistrering findOneByChecksum(String checksum);
 }
