@@ -36,7 +36,7 @@ public class PostnummerController {
 
     private static final boolean EVENT_SEND_ONLY_REFERENCES = true;
 
-    @GetMapping("/")
+    @GetMapping("")
     public String list(Model model) {
         beginRequest();
         return "postnummerlist";

@@ -18,8 +18,8 @@ public class RegistreringReference {
         this.sequenceNumber = sequenceNumber;
     }
 
-    @JsonProperty("uri")
-    public String getReference() {
-        return "/postnummer/"+this.checksum+"/get";
-    }
+//    @JsonProperty("uri")
+//    public String getReference() {
+//        return "/postnummer/"+this.checksum+"/get";
+//    }
 }
