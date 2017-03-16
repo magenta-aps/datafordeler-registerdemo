@@ -54,10 +54,10 @@ public class PostnummerController {
     }
 
     @PostMapping("/create")
-    public String createPostnummer(Model model, @ModelAttribute Postnummer postnummer, @ModelAttribute PostnummerRegistrering postnummerRegistrering) {
+    public String createPostnummer(Model model, @ModelAttribute Postnummer postnummer, @ModelAttribute PostnummerRegistrering postnummerRegistrering, @RequestParam(value = "skipEvent", required = false) Integer skipEvent) {
         this.beginRequest();
         this.postnummerRepository.save(postnummer);
-        this.createPostnummerRegistrering(postnummer, postnummerRegistrering);
+        this.createPostnummerRegistrering(postnummer, postnummerRegistrering, skipEvent != null && skipEvent > 0);
         return "redirect:/postnummer/"+postnummer.getId();
     }
 
@@ -91,10 +91,10 @@ public class PostnummerController {
     }
 
     @PostMapping("/{id}/update")
-    public String updatePostnummer(Model model, @PathVariable Long id, @ModelAttribute PostnummerRegistrering postnummerRegistrering) {
+    public String updatePostnummer(Model model, @PathVariable Long id, @ModelAttribute PostnummerRegistrering postnummerRegistrering, @RequestParam(value = "skipEvent", required = false) Integer skipEvent) {
         beginRequest();
         Postnummer postnummer = this.postnummerRepository.findOne(id);
-        this.createPostnummerRegistrering(postnummer, postnummerRegistrering);
+        this.createPostnummerRegistrering(postnummer, postnummerRegistrering, skipEvent != null && skipEvent > 0);
         return "redirect:/postnummer/"+id;
     }
 
@@ -103,7 +103,7 @@ public class PostnummerController {
         return postnummerRepository.findAll();
     }
 
-    private PostnummerRegistrering createPostnummerRegistrering(Postnummer postnummer, PostnummerRegistrering registrering) {
+    private PostnummerRegistrering createPostnummerRegistrering(Postnummer postnummer, PostnummerRegistrering registrering, boolean skipEvent) {
         registrering.setEntity(postnummer);
         PostnummerRegistrering latest = null;
         for (PostnummerRegistrering l : this.postnummerRegistreringRepository.findByEntityOrderByRegisterFrom(postnummer)) {
@@ -112,7 +112,9 @@ public class PostnummerController {
         int nextSequenceNumber = latest != null ? latest.sequenceNumber : 1;
         registrering.setSequenceNumber(nextSequenceNumber);
         this.postnummerRegistreringRepository.save(registrering);
-        this.eventSender.sendPostnummerRegistreringAddEvent(registrering, EVENT_SEND_ONLY_REFERENCES);
+        if (!skipEvent) {
+            this.eventSender.sendPostnummerRegistreringAddEvent(registrering, EVENT_SEND_ONLY_REFERENCES);
+        }
         return registrering;
     }
 

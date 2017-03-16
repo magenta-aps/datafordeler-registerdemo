@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.registerdemo;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
@@ -14,6 +15,10 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @ServletComponentScan
 @SpringBootApplication
 public class Application {
+
+    @Autowired
+    SessionManager sessionManager;
+
     public static void main(final String[] args) throws Exception {
         SpringApplication.run(Application.class, args);
     }
