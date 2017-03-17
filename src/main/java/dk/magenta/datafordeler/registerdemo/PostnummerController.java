@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Iterator;
 
 /**
@@ -36,6 +38,15 @@ public class PostnummerController {
 
     private static final boolean EVENT_SEND_ONLY_REFERENCES = true;
 
+    private static final int EVENTLEVEL_NO_EVENT = 0;
+    private static final int EVENTLEVEL_EVENT_REFERENCE = 1;
+    private static final int EVENTLEVEL_EVENT_FULL = 2;
+
+    @PostConstruct
+    public void postnummerpostconstruct() {
+        System.out.println("PostnummerController PostConstruct");
+    }
+
     @GetMapping("")
     public String list(Model model) {
         beginRequest();
@@ -54,10 +65,10 @@ public class PostnummerController {
     }
 
     @PostMapping("/create")
-    public String createPostnummer(Model model, @ModelAttribute Postnummer postnummer, @ModelAttribute PostnummerRegistrering postnummerRegistrering, @RequestParam(value = "skipEvent", required = false) Integer skipEvent) {
+    public String createPostnummer(Model model, @ModelAttribute Postnummer postnummer, @ModelAttribute PostnummerRegistrering postnummerRegistrering, @RequestParam(value = "eventLevel", required = false) Integer eventLevel) {
         this.beginRequest();
         this.postnummerRepository.save(postnummer);
-        this.createPostnummerRegistrering(postnummer, postnummerRegistrering, skipEvent != null && skipEvent > 0);
+        this.createPostnummerRegistrering(postnummer, postnummerRegistrering, eventLevel);
         return "redirect:/postnummer/"+postnummer.getId();
     }
 
@@ -91,10 +102,10 @@ public class PostnummerController {
     }
 
     @PostMapping("/{id}/update")
-    public String updatePostnummer(Model model, @PathVariable Long id, @ModelAttribute PostnummerRegistrering postnummerRegistrering, @RequestParam(value = "skipEvent", required = false) Integer skipEvent) {
+    public String updatePostnummer(Model model, @PathVariable Long id, @ModelAttribute PostnummerRegistrering postnummerRegistrering, @RequestParam(value = "eventLevel", required = false) Integer eventLevel) {
         beginRequest();
         Postnummer postnummer = this.postnummerRepository.findOne(id);
-        this.createPostnummerRegistrering(postnummer, postnummerRegistrering, skipEvent != null && skipEvent > 0);
+        this.createPostnummerRegistrering(postnummer, postnummerRegistrering, eventLevel);
         return "redirect:/postnummer/"+id;
     }
 
@@ -103,7 +114,10 @@ public class PostnummerController {
         return postnummerRepository.findAll();
     }
 
-    private PostnummerRegistrering createPostnummerRegistrering(Postnummer postnummer, PostnummerRegistrering registrering, boolean skipEvent) {
+    private PostnummerRegistrering createPostnummerRegistrering(Postnummer postnummer, PostnummerRegistrering registrering, Integer eventLevel) {
+        if (eventLevel == null) {
+            eventLevel = EVENTLEVEL_EVENT_FULL;
+        }
         registrering.setEntity(postnummer);
         PostnummerRegistrering latest = null;
         for (PostnummerRegistrering l : this.postnummerRegistreringRepository.findByEntityOrderByRegisterFrom(postnummer)) {
@@ -112,8 +126,8 @@ public class PostnummerController {
         int nextSequenceNumber = latest != null ? latest.sequenceNumber : 1;
         registrering.setSequenceNumber(nextSequenceNumber);
         this.postnummerRegistreringRepository.save(registrering);
-        if (!skipEvent) {
-            this.eventSender.sendPostnummerRegistreringAddEvent(registrering, EVENT_SEND_ONLY_REFERENCES);
+        if (eventLevel != EVENTLEVEL_NO_EVENT) {
+            this.eventSender.sendPostnummerRegistreringAddEvent(registrering, eventLevel == EVENTLEVEL_EVENT_REFERENCE);
         }
         return registrering;
     }
@@ -123,6 +137,7 @@ public class PostnummerController {
         beginRequest();
         PostnummerRegistrering registrering = postnummerRegistreringRepository.findOneByChecksum(checksum);
         endRequest();
+        RequestExpector.engageExpectors(checksum);
         return registrering;
     }
 
